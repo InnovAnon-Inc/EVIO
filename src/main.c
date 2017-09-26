@@ -11,7 +11,7 @@
 
 #include <evio.h>
 
-__attribute__ ((leaf, nonnull (1, 2, 4), nothrow, warn_unused_result))
+__attribute__ ((nonnull (1, 2, 4), nothrow, warn_unused_result))
 static int evio_cb (
    void *restrict dest,
    void const *restrict src,
