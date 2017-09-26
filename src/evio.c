@@ -5,6 +5,8 @@
 #define _POSIX_C_SOURCE 200112L
 #define __STDC_VERSION__ 200112L
 
+#include <stdlib.h>
+
 #include <glitter.h>
 
 	#pragma GCC diagnostic push
@@ -60,14 +62,15 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
       TODO (stop ev loop)
       return;
    }
-   error_check (w->cb (watcher->data, w->data, rd, &(watcher->datasz)) != 0) {
+   error_check (w->cb (watcher->data, w->data,
+      (size_t) rd, &(watcher->datasz)) != 0) {
       TODO (stop ev loop)
       return;
    }
    TODO (start wr watcher)
 
    ev_io_init (&(watcher->io), ev_write_cb, watcher->fd, EV_WRITE);
-   ev_io_start (loop, (ev_io *restrict) &watcher);
+   ev_io_start (loop, (ev_io *restrict) watcher);
 }
 __attribute__ ((nonnull (1), nothrow))
 static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
@@ -75,7 +78,11 @@ static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
    ssize_t wr;
    TODO (check revents)
    wr = r_write (w->fd, w->data, w->datasz);
-   error_check (wr != w->datasz) {
+   error_check (wr == -1) {
+      TODO (stop ev loop)
+      return;
+   }
+   error_check ((size_t) wr != w->datasz) {
       TODO (stop ev loop)
       return;
    }
@@ -86,7 +93,7 @@ static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
    TODO (stop wr watcher)
 }
 
-__attribute__ ((nonnull (7), nothrow, warn_unused_result))
+__attribute__ ((nonnull (5), nothrow, warn_unused_result))
 int evio (
    fd_t in, fd_t out,
    size_t in_bufsz,
@@ -107,15 +114,15 @@ int evio (
       return -2;
    }
 
-   rd->fd = in;
-   wr->fd = out;
-   rd->data = in_buf;
-   wr->data = out_buf;
-   rd->datasz = in_bufsz;
-   wr->datasz = out_bufsz;
-   rd->cb = cb;
-   /*wr->cb = cb;*/
-   rd->watcher = &wr;
+   rd.fd = in;
+   wr.fd = out;
+   rd.data = in_buf;
+   wr.data = out_buf;
+   rd.datasz = in_bufsz;
+   wr.datasz = out_bufsz;
+   rd.cb = cb;
+   /*wr.cb = cb;*/
+   rd.watcher = &wr;
 
    ev_io_init (&(rd.io), ev_read_cb, rd.fd, EV_READ);
    ev_io_start (loop, (ev_io *restrict) &rd);
