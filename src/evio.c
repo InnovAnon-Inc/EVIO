@@ -22,7 +22,10 @@
 typedef struct {
    ev_io io;
    fd_t fd;
-   pipe_t *restrict in;
+   void *restrict data;
+   size_t datasz;
+   size_t rd;
+   void *restrict watcher;
 } rd_watcher_t;
 	#pragma GCC diagnostic pop
 
@@ -31,7 +34,8 @@ typedef struct {
 typedef struct {
    ev_io io;
    fd_t fd;
-   pipe_t *restrict out;
+   void *restrict data;
+   size_t datasz;
 } wr_watcher_t;
 	#pragma GCC diagnostic pop
 
@@ -40,20 +44,39 @@ TODO (ev_rw_cb_common ())
 __attribute__ ((nonnull (1), nothrow))
 static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
    rd_watcher_t *restrict w = (rd_watcher_t *restrict) _w;
+   ssize_t rd;
    TODO (check revents)
-   error_check (read_pipe (w->in, w->fd)  != 0) {
+   rd = r_read (w->fd, w->data, w->datasz);
+   if (rd == 0) {
       TODO (stop ev loop)
       return;
    }
+   error_check (rd == -1) {
+      TODO (stop ev loop)
+      return;
+   }
+   w->watcher->rd = (size_t) rd;
+   error_check (w->cb (w->data, w->rd) != 0) {
+      TODO (stop ev loop)
+      return;
+   }
+   TODO (start wr watcher)
 }
 __attribute__ ((nonnull (1), nothrow))
 static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
    wr_watcher_t *restrict w = (wr_watcher_t *restrict) _w;
+   ssize_t wr;
    TODO (check revents)
-   error_check (write_pipe (w->out, w->fd) != 0) {
+   wr = r_write (w->fd, w->data, w->datasz);
+   error_check (wr != w->datasz) {
       TODO (stop ev loop)
       return;
    }
+   error_check (w->cb (w->data, w->rd) != 0) {
+      TODO (stop ev loop)
+      return;
+   }
+   TODO (stop wr watcher)
 }
 
 typedef struct {
@@ -127,9 +150,9 @@ static void *worker_thread_cb (void *restrict _arg) {
 __attribute__ ((nonnull (7), nothrow, warn_unused_result))
 int evio (
    fd_t in, fd_t out,
-   size_t in_bufsz, size_t in_nbuf,
-   size_t out_bufsz, size_t out_nbuf,
-   threv_cb_t cb) {
+   size_t in_bufsz,
+   size_t out_bufsz,
+   evio_cb_t cb) {
    thread_cb_t thread_cb;
    worker_cb_t worker_cb;
    io_t dest/*, src*/;

@@ -11,7 +11,7 @@
 
 #include <evio.h>
 
-__attribute__ ((nonnull (1, 2, 4), nothrow, warn_unused_result))
+__attribute__ ((leaf, nonnull (1, 2, 4), nothrow, warn_unused_result))
 static int evio_cb (
    void *restrict dest,
    void const *restrict src,
@@ -25,8 +25,8 @@ __attribute__ ((nothrow, warn_unused_result))
 int main (void) {
    error_check (evio (
       STDIN_FILENO, STDOUT_FILENO,
-      (size_t) 10, (size_t) 3,
-      (size_t) 8,  (size_t) 3,
+      (size_t) 10,
+      (size_t) 8,
       evio_cb) != 0)
       return EXIT_FAILURE;
    return EXIT_SUCCESS;
