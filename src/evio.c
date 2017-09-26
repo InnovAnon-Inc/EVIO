@@ -24,7 +24,6 @@ typedef struct {
    fd_t fd;
    void *restrict data;
    size_t datasz;
-   size_t rd;
    void *restrict watcher;
 } rd_watcher_t;
 	#pragma GCC diagnostic pop
@@ -55,7 +54,7 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
       TODO (stop ev loop)
       return;
    }
-   w->watcher->rd = (size_t) rd;
+   w->watcher->datasz = (size_t) rd;
    error_check (w->cb (w->data, w->rd) != 0) {
       TODO (stop ev loop)
       return;
