@@ -68,7 +68,7 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
    TODO (start wr watcher)
 
    ev_io_init (&(watcher->io), ev_write_cb, watcher->fd, EV_WRITE);
-   ev_io_start (loop, (ev_io *) &watcher);
+   ev_io_start (loop, (ev_io *restrict) &watcher);
 }
 __attribute__ ((nonnull (1), nothrow))
 static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
@@ -85,14 +85,6 @@ static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
       return;
    }*/
    TODO (stop wr watcher)
-}
-
-__attribute__ ((nonnull (1), nothrow, warn_unused_result))
-static void *rd_thread_cb (void *restrict _arg) {
-   thread_cb_t *restrict arg = (thread_cb_t *restrict) _arg;
-
-
-   return NULL;
 }
 
 __attribute__ ((nonnull (7), nothrow, warn_unused_result))
@@ -127,7 +119,7 @@ int evio (
    rd->watcher = &wr;
 
    ev_io_init (&(rd.io), ev_read_cb, rd.fd, EV_READ);
-   ev_io_start (loop, (ev_io *) &rd);
+   ev_io_start (loop, (ev_io *restrict) &rd);
 
    ev_run (loop, 0);
 
