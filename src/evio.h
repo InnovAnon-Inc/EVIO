@@ -22,6 +22,8 @@ int evio (
    evio_cb_t cb)
 __attribute__ ((nonnull (5), nothrow, warn_unused_result)) ;
 
+TODO (evio_alloc)
+
 #ifdef __cplusplus
 }
 #endif
