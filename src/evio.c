@@ -140,6 +140,7 @@ int evio (
    ev_io_start (loop, (ev_io *restrict) &rd);
 
    ev_run (loop, 0);
+   ev_loop_destroy (loop);
 
    free (in_buf);
    free (out_buf);
