@@ -43,6 +43,7 @@ TODO (ev_rw_cb_common ())
 __attribute__ ((nonnull (1), nothrow))
 static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
    rd_watcher_t *restrict w = (rd_watcher_t *restrict) _w;
+   wr_watcher_t *restrict watcher = (wr_watcher_t *restrict) (w->watcher);
    ssize_t rd;
    TODO (check revents)
    rd = r_read (w->fd, w->data, w->datasz);
@@ -54,8 +55,8 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
       TODO (stop ev loop)
       return;
    }
-   w->watcher->datasz = (size_t) rd;
-   error_check (w->cb (w->data, w->rd) != 0) {
+   watcher->datasz = (size_t) rd;
+   error_check (w->cb (w->data, &(watcher->datasz)) != 0) {
       TODO (stop ev loop)
       return;
    }
