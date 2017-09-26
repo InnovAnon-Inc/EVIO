@@ -38,6 +38,7 @@ typedef struct {
    fd_t fd;
    void *restrict data;
    size_t datasz;
+   rd_watcher_t *restrict watcher;
    /*evio_cb_t cb;*/
 } wr_watcher_t;
 	#pragma GCC diagnostic pop
@@ -55,42 +56,52 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
    TODO (check revents)
    rd = r_read (w->fd, w->data, w->datasz);
    if (rd == 0) {
-      TODO (stop ev loop)
+      ev_io_stop (EV_A_ _w);
+      ev_break (EV_A_ EVBREAK_ALL);
       return;
    }
    error_check (rd == -1) {
-      TODO (stop ev loop)
+      ev_io_stop (EV_A_ _w);
+      ev_break (EV_A_ EVBREAK_ALL);
       return;
    }
    error_check (w->cb (watcher->data, w->data,
       (size_t) rd, &(watcher->datasz)) != 0) {
-      TODO (stop ev loop)
+      ev_io_stop (EV_A_ _w);
+      ev_break (EV_A_ EVBREAK_ALL);
       return;
    }
-   TODO (start wr watcher)
 
    ev_io_init (&(watcher->io), ev_write_cb, watcher->fd, EV_WRITE);
    ev_io_start (loop, (ev_io *restrict) watcher);
+
+   ev_io_stop (EV_A_ _w);
 }
 __attribute__ ((nonnull (1), nothrow))
 static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
    wr_watcher_t *restrict w = (wr_watcher_t *restrict) _w;
+   rd_watcher_t *restrict watcher = (rd_watcher_t *restrict) (w->watcher);
    ssize_t wr;
    TODO (check revents)
    wr = r_write (w->fd, w->data, w->datasz);
    error_check (wr == -1) {
-      TODO (stop ev loop)
+      ev_io_stop (EV_A_ _w);
+      ev_break (EV_A_ EVBREAK_ALL);
       return;
    }
    error_check ((size_t) wr != w->datasz) {
-      TODO (stop ev loop)
+      ev_io_stop (EV_A_ _w);
+      ev_break (EV_A_ EVBREAK_ALL);
       return;
    }
    /*error_check (w->cb (w->data, w->rd) != 0) {
       TODO (stop ev loop)
       return;
    }*/
-   TODO (stop wr watcher)
+   ev_io_init (&(watcher->io), ev_read_cb, watcher->fd, EV_READ);
+   ev_io_start (loop, (ev_io *restrict) watcher);
+
+   ev_io_stop (EV_A_ _w);
 }
 
 __attribute__ ((nonnull (5), nothrow, warn_unused_result))
@@ -123,6 +134,7 @@ int evio (
    rd.cb = cb;
    /*wr.cb = cb;*/
    rd.watcher = &wr;
+   wr.watcher = &rd;
 
    ev_io_init (&(rd.io), ev_read_cb, rd.fd, EV_READ);
    ev_io_start (loop, (ev_io *restrict) &rd);
