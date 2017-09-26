@@ -60,8 +60,7 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
       TODO (stop ev loop)
       return;
    }
-   watcher->datasz = (size_t) rd;
-   error_check (w->cb (w->data, &(watcher->datasz)) != 0) {
+   error_check (w->cb (watcher->data, w->data, rd, &(watcher->datasz)) != 0) {
       TODO (stop ev loop)
       return;
    }
@@ -113,7 +112,7 @@ int evio (
    rd->data = in_buf;
    wr->data = out_buf;
    rd->datasz = in_bufsz;
-   /*wr->datasz = out_bufsz;*/
+   wr->datasz = out_bufsz;
    rd->cb = cb;
    /*wr->cb = cb;*/
    rd->watcher = &wr;
