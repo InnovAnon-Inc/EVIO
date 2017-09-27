@@ -7,4 +7,4 @@ bin_PROGRAMS = evio
 evio_SOURCES = main.c
 evio_LDADD = libevio.la -lrestart -lev
 
-AM_CPPFLAGS = -D__STDC_INT64__
+AM_CPPFLAGS += -D__STDC_INT64__
