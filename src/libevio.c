@@ -85,8 +85,11 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
 }
 __attribute__ ((nonnull (1), nothrow))
 static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wstrict-aliasing"
    wr_watcher_t *restrict w = (wr_watcher_t *restrict) _w;
    rd_watcher_t *restrict watcher = (rd_watcher_t *restrict) (w->watcher);
+	#pragma GCC diagnostic pop
    ssize_t wr;
    TODO (check revents)
    wr = r_write (w->fd, w->data, w->datasz);
