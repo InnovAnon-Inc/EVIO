@@ -8,6 +8,7 @@ AM_CPPFLAGS += -I $(top_srcdir)/restart/src
 
 SUBDIRS += ../libev
 AM_CPPFLAGS += -I $(top_srcdir)/libev
+libev_CPPFLAGS = -Wno-strict-aliasing
 
 LIBEVIO_LIBADD  = ../restart/src/.libs/librestart.la $(LIBRESTART_LIBADD)
 #LIBEVIO_LIBADD += -lev
