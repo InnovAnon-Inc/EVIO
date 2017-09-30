@@ -53,8 +53,8 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wstrict-aliasing"
    rd_watcher_t *restrict w = (rd_watcher_t *restrict) _w;
-	#pragma GCC diagnostic pop
    wr_watcher_t *restrict watcher = (wr_watcher_t *restrict) (w->watcher);
+	#pragma GCC diagnostic pop
    ssize_t rd;
    TODO (check revents)
    rd = r_read (w->fd, w->data, w->datasz);
@@ -75,8 +75,11 @@ static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
       return;
    }
 
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wstrict-aliasing"
    ev_io_init (&(watcher->io), ev_write_cb, watcher->fd, EV_WRITE);
    ev_io_start (loop, (ev_io *restrict) watcher);
+	#pragma GCC diagnostic pop
 
    ev_io_stop (EV_A_ _w);
 }
@@ -101,8 +104,11 @@ static void ev_write_cb (EV_P_ ev_io *restrict _w, int revents) {
       TODO (stop ev loop)
       return;
    }*/
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wstrict-aliasing"
    ev_io_init (&(watcher->io), ev_read_cb, watcher->fd, EV_READ);
    ev_io_start (loop, (ev_io *restrict) watcher);
+	#pragma GCC diagnostic pop
 
    ev_io_stop (EV_A_ _w);
 }
@@ -139,8 +145,11 @@ int evio (
    rd.watcher = &wr;
    wr.watcher = &rd;
 
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wstrict-aliasing"
    ev_io_init (&(rd.io), ev_read_cb, rd.fd, EV_READ);
    ev_io_start (loop, (ev_io *restrict) &rd);
+	#pragma GCC diagnostic pop
 
    ev_run (loop, 0);
    ev_loop_destroy (loop);
