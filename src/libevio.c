@@ -50,7 +50,10 @@ __attribute__ ((nonnull (1), nothrow)) ;
 
 __attribute__ ((nonnull (1), nothrow))
 static void ev_read_cb (EV_P_ ev_io *restrict _w, int revents) {
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wstrict-aliasing"
    rd_watcher_t *restrict w = (rd_watcher_t *restrict) _w;
+	#pragma GCC diagnostic pop
    wr_watcher_t *restrict watcher = (wr_watcher_t *restrict) (w->watcher);
    ssize_t rd;
    TODO (check revents)
