@@ -1,12 +1,17 @@
-lib_LTLIBRARIES = libevio.la
-libevio_la_SOURCES = evio.c
-include_HEADERS = evio.h
-libevio_la_LIBADD = -lrestart -lev
+LIBEVIO_LIBADD  = ../restart/src/.libs/librestart.la $(LIBRESTART_LIBADD)
+LIBEVIO_LIBADD += -lev
 
-bin_PROGRAMS = evio
-evio_SOURCES = main.c
-evio_LDADD = libevio.la -lrestart -lev
+lib_LTLIBRARIES = libevio.la
+include_HEADERS = evio.h
+libevio_la_LIBADD = $(LIBEVIO_LIBADD)
+
+bin_PROGRAMS = evio-test
+evio_test_LDADD = libevio.la $(LIBEVIO_LIBADD)
 
 AM_CPPFLAGS = -D__STDC_INT64__
-AM_CPPFLAGS += -I $(srcdir)/../glitter/src
-AM_CPPFLAGS += -I $(srcdir)/../restart/src
+
+SUBDIRS = ../glitter
+AM_CPPFLAGS += -I ../glitter/src
+
+SUBDIRS + ../restart
+AM_CPPFLAGS += -I ../restart/src
