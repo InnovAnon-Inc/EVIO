@@ -24,4 +24,4 @@ bin_PROGRAMS = evio-test
 #evio_test_LDADD = libevio.la $(LIBEVIO_LIBADD)
 #evio_test_LDADD = $(EVIO_TEST_LIBADD)
 evio_test_LDADD = @EVIO_TEST_LIBADD@
-EXTRA_evio_test_DEPENENCIES = libevio.la
+EXTRA_evio_test_DEPENDENCIES = libevio.la
