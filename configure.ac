@@ -25,12 +25,14 @@ AC_CHECK_HEADERS([glitter.h restart.h])
 AC_CHECK_LIB([ev],[ev_run,ev_io_init,ev_io_start,ev_io_stop,ev_break])
 AC_CHECK_LIB([restart],[r_read,r_write,r_close])
 
-srcdir = @srcdir@
-LIBEVIO_LIBADD="`PATH=$(srcdir)src:$PATH libevio_config --libs`"
+#srcdir = @srcdir@
+#LIBEVIO_LIBADD="`PATH=$(srcdir)src:$PATH libevio_config --libs`"
+LIBEVIO_LIBADD="`PATH=src:$PATH libevio_config --libs`"
 AC_SUBST(LIBEVIO_LIBADD)
 
 #EVIO_TEST_LIBADD="libevio.la `PATH=src:$PATH evio_test_config --libs`"
-EVIO_TEST_LIBADD="`PATH=$(srcdir)src:$PATH evio_test_config --libs`"
+#EVIO_TEST_LIBADD="`PATH=$(srcdir)src:$PATH evio_test_config --libs`"
+EVIO_TEST_LIBADD="`PATH=src:$PATH evio_test_config --libs`"
 AC_SUBST(EVIO_TEST_LIBADD)
 
 INNOVANON_WARNINGS([])
