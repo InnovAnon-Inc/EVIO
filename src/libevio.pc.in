@@ -11,5 +11,7 @@ Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -levio
 Cflags: -I${includedir}
 Requires: glitter
-Requires.private: librestart -lev
+#Requires.private: librestart -lev
+Requires.private: librestart
+Libs.private: -lev
 
