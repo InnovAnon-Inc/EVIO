@@ -1,7 +1,0 @@
-#! /bin/bash
-set -eu
-[ $# -eq 1 ]
-[ $1 == --libs ]
-#libevio_config --libs
-echo -levio `libevio_config --libs`
-
