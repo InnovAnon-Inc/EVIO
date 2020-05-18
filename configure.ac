@@ -8,32 +8,28 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
  Makefile
  src/Makefile
+ src/libevio.pc
+ src/evio-test.pc
 ])
+
+PKG_PROG_PKG_CONFIG
 
 AC_ARG_ENABLE([use-submodules],
     AS_HELP_STRING([--enable-use-submodules], [Enable use submodules]))
 AM_CONDITIONAL([USE_SUBMODULES], [test x"$enable_use_submodules" = "xyes"])
 
 AC_CONFIG_MACRO_DIR([m4])
-#AC_CONFIG_SUBDIRS([glitter restart libev])
 
 AC_CHECK_HEADERS([stdlib.h])
 AC_CHECK_HEADERS([ev.h])
-AC_CHECK_HEADERS([glitter.h restart.h])
+#AC_CHECK_HEADERS([glitter.h restart.h])
 
 #AC_CHECK_LIB([stdlib],[])
 AC_CHECK_LIB([ev],[ev_run,ev_io_init,ev_io_start,ev_io_stop,ev_break])
-AC_CHECK_LIB([restart],[r_read,r_write,r_close])
+#AC_CHECK_LIB([restart],[r_read,r_write,r_close])
 
-#srcdir = @srcdir@
-#LIBEVIO_LIBADD="`PATH=$(srcdir)src:$PATH libevio_config --libs`"
-LIBEVIO_LIBADD="`PATH=src:$PATH libevio_config --libs`"
-AC_SUBST(LIBEVIO_LIBADD)
-
-#EVIO_TEST_LIBADD="libevio.la `PATH=src:$PATH evio_test_config --libs`"
-#EVIO_TEST_LIBADD="`PATH=$(srcdir)src:$PATH evio_test_config --libs`"
-EVIO_TEST_LIBADD="`PATH=src:$PATH evio_test_config --libs`"
-AC_SUBST(EVIO_TEST_LIBADD)
+PKG_CHECK_MODULES([GLITTER],[glitter],,)
+PKG_CHECK_MODULES([RESTART],[librestart],,)
 
 INNOVANON_WARNINGS([])
 

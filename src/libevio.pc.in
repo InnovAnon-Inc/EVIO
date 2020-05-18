@@ -1,0 +1,15 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+#evio_utility=evio-test
+
+Name: @PACKAGE_NAME@
+Description: evio library
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -levio
+Cflags: -I${includedir}
+Requires: glitter
+Requires.private: librestart -lev
+
